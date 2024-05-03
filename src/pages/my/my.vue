@@ -1,13 +1,7 @@
 <script setup lang="ts">
 import { useMemberStore } from '@/stores'
-import { FetchBanner } from '@/apis/home'
 
 const memberStore = useMemberStore()
-// 测试请求
-const getData = async () => {
-  const res = await FetchBanner()
-  console.log('获取数据成功', res)
-}
 </script>
 
 <template>
@@ -27,7 +21,6 @@ const getData = async () => {
       保存用户信息
     </button>
     <button @tap="memberStore.clearProfile()" size="mini" plain type="warn">清理用户信息</button>
-    <button @tap="getData" size="mini" plain type="success">测试请求</button>
   </view>
 </template>
 
