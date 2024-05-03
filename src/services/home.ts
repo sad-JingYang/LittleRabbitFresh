@@ -36,3 +36,13 @@ export function FetchHomeHot() {
     url: '/home/hot/mutli',
   })
 }
+
+/**
+ * 猜你喜欢-小程序
+ * */
+export function FetchHomeGoodsGuessLike() {
+  return http({
+    method: 'GET',
+    url: '/home/goods/guessLike',
+  })
+}
