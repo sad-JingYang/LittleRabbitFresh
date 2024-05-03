@@ -1,4 +1,4 @@
-import type { BannerItem, CategoryItem } from '@/types/home'
+import type { BannerItem, CategoryItem, HotItem } from '@/types/home'
 import { http } from '@/utils/http'
 import Category from '@/pages/category/category.vue'
 
@@ -24,5 +24,15 @@ export function FetchHomeCategory() {
   return http<CategoryItem[]>({
     method: 'GET',
     url: '/home/category/mutli',
+  })
+}
+
+/**
+ * 首页-热门推荐-小程序
+ * */
+export function FetchHomeHot() {
+  return http<HotItem[]>({
+    method: 'GET',
+    url: '/home/hot/mutli',
   })
 }
