@@ -1,4 +1,4 @@
-import type { BannerItem } from '@/types/home'
+import type { BannerItem, CategoryItem } from '@/types/home'
 import { http } from '@/utils/http'
 import Category from '@/pages/category/category.vue'
 
@@ -21,7 +21,7 @@ export function FetchHomeBanner(distributionSite = 1) {
  * 首页-前台分类-小程序
  * */
 export function FetchHomeCategory() {
-  return http({
+  return http<CategoryItem[]>({
     method: 'GET',
     url: '/home/category/mutli',
   })

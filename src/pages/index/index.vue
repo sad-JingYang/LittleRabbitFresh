@@ -2,11 +2,12 @@
 import CustomNavbar from './components/CustomNavbar.vue'
 import { onLoad } from '@dcloudio/uni-app'
 import { FetchHomeBanner, FetchHomeCategory } from '@/services/home'
-import type { BannerItem } from '@/types/home'
+import type { BannerItem, CategoryItem } from '@/types/home'
 import { ref } from 'vue'
 import CategoryPanel from './components/CategoryPanel.vue'
 
 const bannerList = ref<BannerItem[]>([])
+const categoryList = ref<CategoryItem[]>([])
 
 // 获取轮播图数据
 const BannerList = async () => {
@@ -17,7 +18,7 @@ const BannerList = async () => {
 // 获取前台分类数据
 const getHomeCategoryData = async () => {
   const res = await FetchHomeCategory()
-  console.log(res)
+  categoryList.value = res.result
 }
 
 onLoad(() => {
@@ -32,7 +33,7 @@ onLoad(() => {
   <!-- 自定义轮播图 -->
   <XtxSwiper :list="bannerList" />
   <!-- 分类面板 -->
-  <CategoryPanel />
+  <CategoryPanel :list="categoryList" />
   <view class="index">index</view>
 </template>
 
