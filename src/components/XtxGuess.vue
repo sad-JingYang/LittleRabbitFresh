@@ -6,19 +6,33 @@ import type { PageParams } from '@/types/global'
 
 // 分页参数
 const pageParams: Required<PageParams> = {
-  page: 1,
+  page: 30,
   pageSize: 10,
 }
 // 猜你喜欢数据列表
 const guessList = ref<GuessItem[]>([])
+// 已结束标记
+const finish = ref(false)
 
 // 获取猜你喜欢数据
 const GetHomeGoodsGuessLikeData = async () => {
+  // 退出判断
+  if (finish.value) {
+    return uni.showToast({
+      icon: 'none',
+      title: '没有更多数据了',
+    })
+  }
   const res = await FetchHomeGoodsGuessLike(pageParams)
   // 数组追加
   guessList.value.push(...res.result.items)
-  // 页码累加
-  pageParams.page++
+  // 分页条件
+  if (pageParams.page < res.result.pages) {
+    // 页码累加
+    pageParams.page++
+  } else {
+    finish.value = true
+  }
 }
 
 // 组件挂载完毕
@@ -52,7 +66,7 @@ defineExpose({
       </view>
     </navigator>
   </view>
-  <view class="loading-text"> 正在加载... </view>
+  <view class="loading-text"> {{ finish ? '没有更多了' : '正在加载...' }} </view>
 </template>
 
 <style lang="scss">
