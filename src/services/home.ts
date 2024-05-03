@@ -1,6 +1,7 @@
-import type { BannerItem, CategoryItem, HotItem } from '@/types/home'
+import type { BannerItem, CategoryItem, HotItem, GuessItem } from '@/types/home'
 import { http } from '@/utils/http'
 import Category from '@/pages/category/category.vue'
+import type { PageResult } from '@/types/global'
 
 /**
  * 首页-广告区域-小程序
@@ -41,7 +42,7 @@ export function FetchHomeHot() {
  * 猜你喜欢-小程序
  * */
 export function FetchHomeGoodsGuessLike() {
-  return http({
+  return http<PageResult<GuessItem>>({
     method: 'GET',
     url: '/home/goods/guessLike',
   })
