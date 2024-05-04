@@ -12,6 +12,7 @@
     <option name="vueVersion" value="3" />
     <option name="srcPath" value="/src/" />
     <option name="isCliProject" value="true" />
+    <option name="newPageCreateDir" value="true" />
     <option name="pluginEnabled" value="true" />
   </component>
 </project>
