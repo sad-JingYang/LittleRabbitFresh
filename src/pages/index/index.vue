@@ -41,8 +41,10 @@ const onScrolltolower = () => {
 const onRefresherrefresh = async () => {
   // 开启动画
   isTriggered.value = true
+  // 重置猜你喜欢组件数据
+  guessRef.value?.resetData()
   // 加载数据
-  await Promise.all([BannerList(), getHomeCategoryData(), GetHomeHot()])
+  await Promise.all([BannerList(), getHomeCategoryData(), GetHomeHot(), guessRef.value?.getMore()])
   // 关闭动画
   isTriggered.value = false
 }
