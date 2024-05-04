@@ -14,10 +14,26 @@ const query = defineProps<{
 
 const goods = ref<GoodsResult>() // 商品详情信息数据
 
+const currentIndex = ref(0) // 轮播图下标
+
 // 获取商品详情信息
 const GetGoodsByIdData = async () => {
   const res = await FetchGoodsById(query.id)
   goods.value = res.result
+}
+
+// 轮播图变化时触发
+const onChange: UniHelper.SwiperOnChange = (ev) => {
+  currentIndex.value = ev.detail!.current
+}
+
+// 点击图片时触发
+const onTapImage = (url: string) => {
+  // 大图预览
+  uni.previewImage({
+    current: url,
+    urls: goods.value!.mainPictures,
+  })
 }
 
 // 页面加载
@@ -32,15 +48,15 @@ onLoad(() => {
     <view class="goods">
       <!-- 商品主图 -->
       <view class="preview">
-        <swiper :circular="true">
+        <swiper :circular="true" @change="onChange">
           <swiper-item v-for="item in goods?.mainPictures" :key="item">
-            <image mode="aspectFill" :src="item" />
+            <image mode="aspectFill" :src="item" @tap="onTapImage(item)" />
           </swiper-item>
         </swiper>
         <view class="indicator">
-          <text class="current">1</text>
+          <text class="current">{{ currentIndex + 1 }}</text>
           <text class="split">/</text>
-          <text class="total">5</text>
+          <text class="total">{{ goods?.mainPictures.length }}</text>
         </view>
       </view>
 
