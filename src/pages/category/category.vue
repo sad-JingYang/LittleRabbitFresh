@@ -3,8 +3,12 @@ import { FetchHomeBanner } from '@/services/home'
 import { ref } from 'vue'
 import type { BannerItem } from '@/types/home'
 import { onLoad } from '@dcloudio/uni-app'
+import { FetchCategory } from '@/services/category'
+import type { CategoryTopItem } from '@/types/category'
 
 const bannerList = ref<BannerItem[]>([]) // 轮播图列表数据
+const categoryList = ref<CategoryTopItem[]>([]) // 分类列表数据
+const activeIndex = ref<number>(0) // 高亮下标
 
 // 获取轮播图数据
 const GetBannerData = async () => {
@@ -12,9 +16,16 @@ const GetBannerData = async () => {
   bannerList.value = res.result
 }
 
+// 获取分类列表数据
+const GetCategoryData = async () => {
+  const res = await FetchCategory()
+  categoryList.value = res.result
+}
+
 // 页面加载
 onLoad(() => {
   GetBannerData()
+  GetCategoryData()
 })
 </script>
 
@@ -29,9 +40,15 @@ onLoad(() => {
     <!-- 分类 -->
     <view class="categories">
       <!-- 左侧：一级分类 -->
-      <scroll-view class="primary" scroll-y>
-        <view v-for="(item, index) in 10" :key="item" class="item" :class="{ active: index === 0 }">
-          <text class="name"> 居家 </text>
+      <scroll-view class="primary" :scroll-y="true">
+        <view
+          v-for="(item, index) in categoryList"
+          :key="item.id"
+          class="item"
+          :class="{ active: index === activeIndex }"
+          @tap="activeIndex = index"
+        >
+          <text class="name"> {{ item.name }} </text>
         </view>
       </scroll-view>
       <!-- 右侧：二级分类 -->
