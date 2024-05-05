@@ -13,7 +13,7 @@ export function FetchMemberProfile() {
  * @param data 请求体参数
  * */
 export function putMemberProfile(data: ProfileParams) {
-  return http({
+  return http<ProfileDetail>({
     method: 'PUT',
     url: '/member/profile',
     data,

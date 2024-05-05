@@ -3,10 +3,12 @@ import { FetchMemberProfile, putMemberProfile } from '@/services/profile'
 import { onLoad } from '@dcloudio/uni-app'
 import { ref } from 'vue'
 import type { ProfileDetail } from '@/types/member'
+import { useMemberStore } from '@/stores'
 
 // 获取屏幕边界到安全区域距离
 const { safeAreaInsets } = uni.getSystemInfoSync()
 const profile = ref({} as ProfileDetail) // 用户详情信息
+const memberStore = useMemberStore()
 
 // 获取个人信息
 const GetMemberProfileData = async () => {
@@ -35,6 +37,8 @@ const onAvatarChange = () => {
             const avatar = JSON.parse(res.data).result.avatar
             // 个人信息页数据更新
             profile.value!.avatar = avatar
+            // Store头像更新
+            memberStore.profile!.avatar = avatar
             uni.showToast({ icon: 'success', title: '更新成功' })
           } else {
             uni.showToast({ icon: 'error', title: '出现错误' })
@@ -50,7 +54,12 @@ const onSubmit = async () => {
   const res = await putMemberProfile({
     nickname: profile.value.nickname,
   })
+  // 更新Store昵称
+  memberStore.profile!.nickname = res.result.nickname
   await uni.showToast({ icon: 'success', title: '保存成功' })
+  setTimeout(() => {
+    uni.navigateBack()
+  }, 500)
 }
 
 // 页面加载
