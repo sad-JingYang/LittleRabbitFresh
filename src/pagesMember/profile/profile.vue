@@ -9,6 +9,7 @@ import { useMemberStore } from '@/stores'
 const { safeAreaInsets } = uni.getSystemInfoSync()
 const profile = ref({} as ProfileDetail) // 用户详情信息
 const memberStore = useMemberStore()
+let fullLocationCode: [string, string, string] = ['', '', '']
 
 // 获取个人信息
 const GetMemberProfileData = async () => {
@@ -56,6 +57,9 @@ const onSubmit = async () => {
     nickname,
     gender,
     birthday,
+    provinceCode: fullLocationCode[0],
+    cityCode: fullLocationCode[1],
+    countyCode: fullLocationCode[2],
   })
   // 更新Store昵称
   memberStore.profile!.nickname = res.result.nickname
@@ -73,6 +77,14 @@ const onGenderChange: UniHelper.RadioGroupOnChange = (ev) => {
 // 修改生日
 const onBirthdayChange: UniHelper.DatePickerOnChange = (ev) => {
   profile.value.birthday = ev.detail.value
+}
+
+// 修改城市
+const onFullLocationChange: UniHelper.RegionPickerOnChange = (ev) => {
+  // 修改前端界面
+  profile.value.fullLocation = ev.detail.value.join(' ')
+  // 提交后端更新
+  fullLocationCode = ev.detail.code!
 }
 
 // 页面加载
@@ -136,7 +148,12 @@ onLoad(() => {
         </view>
         <view class="form-item">
           <text class="label">城市</text>
-          <picker class="picker" mode="region" :value="profile?.fullLocation?.split(' ')">
+          <picker
+            class="picker"
+            @change="onFullLocationChange"
+            mode="region"
+            :value="profile?.fullLocation?.split(' ')"
+          >
             <view v-if="profile?.fullLocation">{{ profile.fullLocation }}</view>
             <view class="placeholder" v-else>请选择城市</view>
           </picker>
