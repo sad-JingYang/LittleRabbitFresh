@@ -99,12 +99,12 @@
 			}
 		]
 	},
-  // 分包加载规则
+	// 分包加载规则
 	"subPackages": [
-    // 子包的根目录
+		// 子包的根目录
 		{
 			"root": "pagesMember",
-      //页面路径和窗口表现
+			//页面路径和窗口表现
 			"pages": [
 				{
 					"path": "settings/settings",
@@ -112,22 +112,36 @@
 						"navigationBarTitleText": "设置"
 					}
 				},
+				{
+					"path": "profile/profile",
+					"style": {
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "white",
+						"navigationBarTitleText": "个人信息"
+					}
+				},
+				{
+					"path": "address/address",
+					"style": {
+						"navigationBarTitleText": "地址管理"
+					}
+				},
         {
-          "path": "profile/profile",
+          "path": "address-form/address-form",
           "style": {
-            "navigationStyle": "custom",
-            "navigationBarTextStyle": "white",
-            "navigationBarTitleText": "个人信息"
+            "navigationBarTitleText": ""
           }
         }
 			]
 		}
 	],
-  // 分包预下载规则
-  "preloadRule":  {
-    "pages/my/my": {
-      "network": "all",
-      "packages": ["pagesMember"]
-    }
-  }
+	// 分包预下载规则
+	"preloadRule": {
+		"pages/my/my": {
+			"network": "all",
+			"packages": [
+				"pagesMember"
+			]
+		}
+	}
 }
