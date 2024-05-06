@@ -5,7 +5,11 @@ import { ref } from 'vue'
 import type { GoodsResult } from '@/types/goods'
 import AddressPanel from './components/AddressPanel.vue'
 import ServicePanel from './components/ServicePanel.vue'
-import type { SkuPopupLocaldata } from '@/components/vk-data-goods-sku-popup/vk-data-goods-sku-popup'
+import type {
+  SkuPopupInstanceType,
+  SkuPopupLocaldata,
+} from '@/components/vk-data-goods-sku-popup/vk-data-goods-sku-popup'
+import { computed } from 'vue'
 
 // 获取屏幕边界到安全区域距离
 const { safeAreaInsets } = uni.getSystemInfoSync()
@@ -37,6 +41,8 @@ enum SkuMode {
 } // 枚举按钮模式类型
 
 const mode = ref<SkuMode>(SkuMode.Both) // 按钮模式
+
+const skuPopupRef = ref<SkuPopupInstanceType>() // SKU组件实例
 
 // 获取商品详情信息
 const GetGoodsByIdData = async () => {
@@ -89,12 +95,17 @@ const openPopup = (name: typeof popupName.value) => {
 }
 
 // 打开SKU弹窗时修改按钮模式
-const openSkuPopup = (val) => {
+const openSkuPopup = (val: SkuMode) => {
   // 显示SKU组件
   isShowSku.value = true
   // 修改按钮模式
   mode.value = val
 }
+
+// 计算被选中的值
+const selectArrText = computed(() => {
+  return skuPopupRef.value?.selectArr?.join(' ').trim() || '请选择商品规格'
+})
 
 // 页面加载
 onLoad(() => {
@@ -111,6 +122,12 @@ onLoad(() => {
       :mode="mode"
       add-cart-background-color="#FFA868"
       buy-now-background-color="#27BA9B"
+      ref="skuPopupRef"
+      :actived-style="{
+        color: '#27BA9B',
+        borderColor: '#27BA9B',
+        backgroundColor: '#E9F8F5',
+      }"
     />
     <!-- 基本信息 -->
     <view class="goods">
@@ -142,7 +159,7 @@ onLoad(() => {
       <view class="action">
         <view class="item arrow" @tap="openSkuPopup(SkuMode.Both)">
           <text class="label">选择</text>
-          <text class="text ellipsis"> 请选择商品规格 </text>
+          <text class="text ellipsis"> {{ selectArrText }} </text>
         </view>
         <view class="item arrow" @tap="openPopup('address')">
           <text class="label">送至</text>
