@@ -50,3 +50,15 @@ export const putMemberCartBySkuId = (
     data,
   })
 }
+
+/**
+ * 购物车全选/取消全选
+ * @param data 请求体参数
+ */
+export function putMemberCartSelected(data) {
+  return http({
+    method: 'PUT',
+    url: `/member/cart/selected`,
+    data,
+  })
+}
