@@ -14,6 +14,14 @@ import type { InputNumberBoxEvent } from '@/components/vk-data-input-number-box/
 const memeberStore = useMemberStore() // 获取会员Store
 const cartList = ref<CartItem[]>([]) // 购物车数据
 
+// 是否适配底部安全区域
+defineProps<{
+  safeAreaInsetBottom?: boolean
+}>()
+
+// 获取屏幕边界到安全区域距离
+const { safeAreaInsets } = uni.getSystemInfoSync()
+
 // 获取购物车数据
 const GetMemberCart = async () => {
   const res = await FetchMemberCart()
@@ -164,7 +172,11 @@ onShow(() => {
         </navigator>
       </view>
       <!-- 吸底工具栏 -->
-      <view class="toolbar">
+      <view
+        v-if="cartList.length"
+        class="toolbar"
+        :style="{ paddingBottom: safeAreaInsetBottom ? safeAreaInsets?.bottom + 'px' : 0 }"
+      >
         <text
           class="all"
           @tap="onChangeSelectedAll"
