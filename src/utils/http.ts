@@ -25,7 +25,7 @@ const httpInterceptor = {
     options.timeout = 10000
     // 3. 添加小程序端请求头标识
     options.header = {
-      ...options.headers,
+      ...options.header,
       'source-client': 'miniapp',
     }
     // 4. 添加 token 请求头标识
@@ -54,7 +54,7 @@ uni.addInterceptor('uploadFile', httpInterceptor)
  * */
 interface Data<T> {
   code: string
-  message: string
+  msg: string
   result: T
 }
 
