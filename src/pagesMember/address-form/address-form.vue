@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { postMemberAddress } from '@/services/address'
+import { FetchMemberAddressById, postMemberAddress } from '@/services/address'
+import { onLoad } from '@dcloudio/uni-app'
 
 // 获取页面参数
 const query = defineProps<{
@@ -47,6 +48,21 @@ const onSubmit = async () => {
     uni.navigateBack()
   }, 500)
 }
+
+// 获取收货地址详情数据
+const GetMemberAddressById = async () => {
+  if (query.id) {
+    // 发送请求
+    const res = await FetchMemberAddressById(query.id)
+    // 把数据合并到表单中
+    Object.assign(form.value, res.result)
+  }
+}
+
+// 页面加载
+onLoad(() => {
+  GetMemberAddressById()
+})
 </script>
 
 <template>
