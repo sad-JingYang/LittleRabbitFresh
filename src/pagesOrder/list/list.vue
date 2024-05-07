@@ -31,7 +31,12 @@ orderTabs.value[activeIndex.value].isRender = true
         class="item"
         v-for="(item, index) in orderTabs"
         :key="item.title"
-        @tap="activeIndex = index"
+        @tap="
+          () => {
+            activeIndex = index
+            item.isRender = true
+          }
+        "
       >
         {{ item.title }}
       </text>
@@ -43,7 +48,7 @@ orderTabs.value[activeIndex.value].isRender = true
       <!-- 滑动项 -->
       <swiper-item v-for="item in orderTabs" :key="item.title">
         <!-- 订单列表 -->
-        <OrderList :order-state="item.orderState" />
+        <OrderList v-if="item.isRender" :order-state="item.orderState" />
       </swiper-item>
     </swiper>
   </view>
