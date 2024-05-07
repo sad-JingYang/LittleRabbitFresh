@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { FetchMemberOrderPre } from '@/services/order'
+import { FetchMemberOrderPre, FetchMemberOrderPreNow } from '@/services/order'
 import { onLoad } from '@dcloudio/uni-app'
 import type { OrderPreResult } from '@/types/order'
 import { useAddressStore } from '@/stores/modules/address'
@@ -22,6 +22,11 @@ const orderPre = ref<OrderPreResult>() // 订单信息
 
 const addressStore = useAddressStore()
 
+const query = defineProps<{
+  skuId?: string
+  count?: string
+}>() // 接收页面参数
+
 // 当前配送时间
 const activeDelivery = computed(() => deliveryList.value[activeIndex.value])
 
@@ -32,8 +37,16 @@ const onChangeDelivery: UniHelper.SelectorPickerOnChange = (ev) => {
 
 // 获取订单信息
 const GetMemberOrderPre = async () => {
-  const res = await FetchMemberOrderPre()
-  orderPre.value = res.result
+  if (query.count && query.skuId) {
+    const res = await FetchMemberOrderPreNow({
+      count: query.count,
+      skuId: query.skuId,
+    })
+    orderPre.value = res.result
+  } else {
+    const res = await FetchMemberOrderPre()
+    orderPre.value = res.result
+  }
 }
 
 // 收货地址
