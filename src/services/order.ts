@@ -1,6 +1,8 @@
 import { http } from '@/utils/http'
 import type {
   OrderCreateParams,
+  OrderListParams,
+  OrderListResult,
   OrderLogisticResult,
   OrderPreResult,
   OrderResult,
@@ -87,6 +89,32 @@ export const FetchMemberOrderLogisticsById = (id: string) => {
 export const deleteMemberOrder = (data: { ids: string[] }) => {
   return http({
     method: 'DELETE',
+    url: `/member/order`,
+    data,
+  })
+}
+
+/**
+ * 取消订单
+ * @description 仅在订单状态为待付款时，可取消订单。
+ * @param id 订单id
+ * @param data cancelReason 取消理由
+ */
+export const FetchMemberOrderCancelById = (id: string, data: { cancelReason: string }) => {
+  return http<OrderResult>({
+    method: 'PUT',
+    url: `/member/order/${id}/cancel`,
+    data,
+  })
+}
+
+/**
+ * 获取订单列表
+ * @param data orderState 订单状态
+ */
+export const FetchMemberOrder = (data: OrderListParams) => {
+  return http<OrderListResult>({
+    method: 'GET',
     url: `/member/order`,
     data,
   })
