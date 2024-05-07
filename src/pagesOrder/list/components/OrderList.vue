@@ -3,6 +3,7 @@ import type { OrderItem, OrderListParams } from '@/types/order'
 import { FetchMemberOrder } from '@/services/order'
 import { onMounted, ref } from 'vue'
 import { OrderState, orderStateList } from '@/services/constants'
+import { FetchPayMock, FetchPayWxPayMiniPay } from '@/services/pay'
 
 // 获取屏幕边界到安全区域距离
 const { safeAreaInsets } = uni.getSystemInfoSync()
@@ -27,6 +28,24 @@ const GetMemberOrderData = async () => {
   orderList.value = res.result.items
 }
 
+// 订单支付
+const onOrderPay = async (id: string) => {
+  // 通过环境变量区分开发环境
+  if (import.meta.env.DEV) {
+    // 开发环境：模拟支付，修改订单状态为已支付
+    await FetchPayMock({ orderId: id })
+  } else {
+    // 生产环境：获取支付参数 + 发起微信支付
+    const res = await FetchPayWxPayMiniPay({ orderId: id })
+    await wx.requestOrderPayment(res.result)
+  }
+  // 成功提示
+  uni.showToast({ title: '支付成功' })
+  // 更新订单状态
+  const order = orderList.value.find((v) => v.id === id)
+  order!.orderState = OrderState.DaiFaHuo
+}
+
 onMounted(() => {
   GetMemberOrderData()
 })
@@ -48,7 +67,7 @@ onMounted(() => {
         v-for="item in order.skus"
         :key="item.id"
         class="goods"
-        :url="`/pagesOrder/detail/detail?id=${item.spuId}`"
+        :url="`/pagesOrder/detail/detail?id=${order.id}`"
         hover-class="none"
       >
         <view class="cover">
@@ -69,7 +88,7 @@ onMounted(() => {
       <view class="action">
         <!-- 待付款状态：显示去支付按钮 -->
         <template v-if="order.orderState === OrderState.DaiFuKuan">
-          <view class="button primary">去支付</view>
+          <view class="button primary" @tap="onOrderPay(order.id)">去支付</view>
         </template>
         <template v-else>
           <navigator
