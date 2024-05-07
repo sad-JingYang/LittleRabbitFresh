@@ -5,7 +5,12 @@ import { onLoad, onReady } from '@dcloudio/uni-app'
 import { FetchMemberOrderById } from '@/services/order'
 import type { OrderResult } from '@/types/order'
 import { OrderState, orderStateList } from '@/services/constants'
-import { FetchMemberOrderConsignmentById, FetchPayMock, FetchPayWxPayMiniPay } from '@/services/pay'
+import {
+  FetchMemberOrderConsignmentById,
+  FetchPayMock,
+  FetchPayWxPayMiniPay,
+  putMemberOrderReceiptById,
+} from '@/services/pay'
 
 // 获取屏幕边界到安全区域距离
 const { safeAreaInsets } = uni.getSystemInfoSync()
@@ -109,6 +114,21 @@ const onOrderSend = async () => {
   }
 }
 
+// 确认收货
+const onOrderConfirm = () => {
+  // 二次确认弹窗
+  uni.showModal({
+    content: '为保障您的权益，请收到货并确认无误后，再确认收货',
+    success: async (success) => {
+      if (success.confirm) {
+        const res = await putMemberOrderReceiptById(query.id)
+        // 更新订单状态
+        order.value = res.result
+      }
+    },
+  })
+}
+
 onLoad(() => {
   GetMemberOrderById()
 })
@@ -170,7 +190,13 @@ onLoad(() => {
               模拟发货
             </view>
             <!-- 待收货状态：展示确认收货按钮 -->
-            <view v-if="order.orderState === OrderState.DaiShouHuo" class="button"> 确认收货 </view>
+            <view
+              v-if="order.orderState === OrderState.DaiShouHuo"
+              class="button"
+              @tap="onOrderConfirm"
+            >
+              确认收货
+            </view>
           </view>
         </template>
       </view>
